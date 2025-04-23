@@ -1,7 +1,7 @@
-// @monorepo/auth
+// Export auth related utilities and types
 export const packageName = "@monorepo/auth";
 
-// Authentication interfaces and implementations
+// Auth provider interface
 export interface AuthProvider {
   login(username: string, password: string): Promise<AuthResult>;
   logout(): Promise<void>;
@@ -10,6 +10,7 @@ export interface AuthProvider {
   resetPassword(email: string): Promise<boolean>;
 }
 
+// Auth result interface
 export interface AuthResult {
   success: boolean;
   user?: UserInfo;
@@ -17,6 +18,7 @@ export interface AuthResult {
   error?: string;
 }
 
+// User info interface
 export interface UserInfo {
   id: string;
   username: string;
@@ -24,19 +26,31 @@ export interface UserInfo {
   role: string;
 }
 
-// Basic in-memory auth provider implementation
+// In-memory auth provider implementation
 export class InMemoryAuthProvider implements AuthProvider {
   private users: Record<string, { id: string; username: string; email: string; password: string; role: string }> = {};
   private currentUser: UserInfo | null = null;
   private token: string | null = null;
 
+  constructor() {
+    // Initialize with a default user
+    const defaultUser = {
+      id: 'user-1',
+      username: 'admin',
+      email: 'admin@example.com',
+      password: 'password',
+      role: 'admin',
+    };
+    this.users[defaultUser.username] = defaultUser;
+  }
+
   async login(username: string, password: string): Promise<AuthResult> {
-    const user = Object.values(this.users).find(u => u.username === username && u.password === password);
+    const user = this.users[username];
     
-    if (!user) {
+    if (!user || user.password !== password) {
       return {
         success: false,
-        error: 'Invalid username or password'
+        error: 'Invalid username or password',
       };
     }
 
@@ -44,15 +58,15 @@ export class InMemoryAuthProvider implements AuthProvider {
       id: user.id,
       username: user.username,
       email: user.email,
-      role: user.role
+      role: user.role,
     };
     
-    this.token = Math.random().toString(36).substring(2);
+    this.token = `token-${Date.now()}`;
     
     return {
       success: true,
       user: this.currentUser,
-      token: this.token
+      token: this.token,
     };
   }
 
@@ -62,23 +76,37 @@ export class InMemoryAuthProvider implements AuthProvider {
   }
 
   async register(username: string, email: string, password: string): Promise<AuthResult> {
-    if (Object.values(this.users).some(u => u.username === username)) {
+    if (this.users[username]) {
       return {
         success: false,
-        error: 'Username already exists'
+        error: 'Username already exists',
       };
     }
 
-    const id = Math.random().toString(36).substring(2, 9);
-    this.users[id] = {
-      id,
+    const newUser = {
+      id: `user-${Date.now()}`,
       username,
       email,
       password,
-      role: 'user'
+      role: 'user',
     };
-
-    return this.login(username, password);
+    
+    this.users[username] = newUser;
+    
+    this.currentUser = {
+      id: newUser.id,
+      username: newUser.username,
+      email: newUser.email,
+      role: newUser.role,
+    };
+    
+    this.token = `token-${Date.now()}`;
+    
+    return {
+      success: true,
+      user: this.currentUser,
+      token: this.token,
+    };
   }
 
   async getCurrentUser(): Promise<UserInfo | null> {
@@ -87,7 +115,15 @@ export class InMemoryAuthProvider implements AuthProvider {
 
   async resetPassword(email: string): Promise<boolean> {
     const user = Object.values(this.users).find(u => u.email === email);
-    return !!user;
+    
+    if (!user) {
+      return false;
+    }
+    
+    // In a real implementation, this would generate a reset token and send an email
+    console.log(`Password reset initiated for ${email}`);
+    
+    return true;
   }
 }
 

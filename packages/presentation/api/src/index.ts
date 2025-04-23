@@ -1,19 +1,23 @@
-// @monorepo/api
+// Export API utilities and types
+export * from './apiClient';
+
+// Package version
 export const packageName = "@monorepo/api";
 
-// API client interfaces and functions
+// API configuration types
 export interface ApiConfig {
   baseUrl: string;
   headers?: Record<string, string>;
 }
 
+// API response interface
 export interface ApiResponse<T> {
   data: T;
   status: number;
   message: string;
 }
 
-// Example API client configuration
+// Helper function to create API config
 export const createApiConfig = (baseUrl: string): ApiConfig => ({
   baseUrl,
   headers: {

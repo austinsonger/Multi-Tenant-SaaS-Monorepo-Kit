@@ -1,7 +1,7 @@
-// @monorepo/models
+// Export domain models
 export const packageName = "@monorepo/models";
 
-// Core business models
+// User interface
 export interface User {
   id: string;
   username: string;
@@ -12,6 +12,7 @@ export interface User {
   updatedAt: Date;
 }
 
+// Team interface
 export interface Team {
   id: string;
   name: string;
@@ -21,6 +22,7 @@ export interface Team {
   updatedAt: Date;
 }
 
+// Settings interface
 export interface Settings {
   id: string;
   userId: string;
@@ -30,6 +32,7 @@ export interface Settings {
   updatedAt: Date;
 }
 
+// Audit log interface
 export interface AuditLog {
   id: string;
   action: string;
