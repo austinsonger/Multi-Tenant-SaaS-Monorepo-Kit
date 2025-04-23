@@ -1,7 +1,7 @@
-// @monorepo/services
+// Export application services
 export const packageName = "@monorepo/services";
 
-// Service interfaces and implementations
+// Service interface
 export interface Service<T> {
   getAll(): Promise<T[]>;
   getById(id: string): Promise<T>;
@@ -10,7 +10,7 @@ export interface Service<T> {
   delete(id: string): Promise<boolean>;
 }
 
-// Base service abstract class
+// Base service implementation
 export abstract class BaseService<T extends { id: string }> implements Service<T> {
   protected items: T[] = [];
 
@@ -52,4 +52,5 @@ export abstract class BaseService<T extends { id: string }> implements Service<T
   }
 }
 
+// Package version
 export const version = '0.1.0';

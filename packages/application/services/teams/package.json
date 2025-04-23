@@ -1,5 +1,5 @@
 {
-  "name": "@monorepo/services",
+  "name": "@monorepo/services-teams",
   "version": "0.1.0",
   "private": true,
   "main": "dist/index.js",
@@ -9,7 +9,8 @@
     "dev": "tsc --watch"
   },
   "dependencies": {
-    "@monorepo/models": "0.1.0"
+    "@monorepo/models": "0.1.0",
+    "@monorepo/services": "0.1.0"
   },
   "devDependencies": {
     "typescript": "^5.0.0"
