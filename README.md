@@ -1,5 +1,5 @@
 
-# 🚀 BoxyHQ SaaS Starter Kit Monorepo
+# 🚀 SaaS Starter Kit Monorepo
 
 A production-ready monorepo template for building modern SaaS applications with enterprise-grade features.
 
