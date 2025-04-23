@@ -21,6 +21,8 @@ A production-ready monorepo template for building modern SaaS applications with 
 - **Authentication**: Built-in SAML, OAuth, SSO
 - **State Management**: React Query
 - **UI Components**: Radix UI + Shadcn
+- **Online IDE Ready**: Codespace and Replit Ready
+
 
 ## 📁 Directory Structure
 
