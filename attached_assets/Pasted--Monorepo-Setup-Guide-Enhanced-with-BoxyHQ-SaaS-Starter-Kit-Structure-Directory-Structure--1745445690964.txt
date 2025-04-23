@@ -1,0 +1,271 @@
+# Monorepo Setup Guide (Enhanced with BoxyHQ SaaS Starter Kit Structure)
+
+## Directory Structure
+
+```plaintext
+my-monorepo/
+├── .github/
+│   └── workflows/
+├── config/
+├── docs/
+├── migrations/
+├── packages/
+│   ├── presentation/
+│   │   ├── ui/
+│   │   ├── api/
+│   │   ├── dashboard-widgets/
+│   │   ├── pages/
+│   │   │   ├── index.tsx
+│   │   │   ├── auth/
+│   │   │   ├── dashboard/
+│   │   │   ├── teams/
+│   │   │   ├── settings/
+│   │   │   ├── billing/
+│   │   │   ├── audit-logs/
+│   │   │   └── integrations/
+│   │   ├── components/
+│   │   │   ├── layout/
+│   │   │   ├── forms/
+│   │   │   ├── ui/
+│   │   │   ├── charts/
+│   │   │   ├── navigation/
+│   │   │   └── modals/
+│   │   ├── hooks/
+│   │   │   ├── useAuth.ts
+│   │   │   ├── useTeam.ts
+│   │   │   ├── useSettings.ts
+│   │   │   ├── useBilling.ts
+│   │   │   └── useNotifications.ts
+│   │   ├── lib/
+│   │   │   ├── apiClient.ts
+│   │   │   ├── auth.ts
+│   │   │   ├── i18n.ts
+│   │   │   ├── dateUtils.ts
+│   │   │   ├── permissions.ts
+│   │   │   └── featureFlags.ts
+│   │   └── models/
+│   │       ├── user.ts
+│   │       ├── team.ts
+│   │       ├── settings.ts
+│   │       ├── billing.ts
+│   │       ├── audit.ts
+│   │       └── notifications.ts
+│   ├── application/
+│   │   ├── services/
+│   │   │   ├── assets/
+│   │   │   ├── vulnerabilities/
+│   │   │   ├── poam/
+│   │   │   ├── auth/
+│   │   │   ├── teams/
+│   │   │   ├── audit/
+│   │   │   ├── settings/
+│   │   │   ├── billing/
+│   │   │   ├── integrations/
+│   │   │   └── notifications/
+│   │   └── workflows/
+│   │       ├── reports/
+│   │       ├── ssp/
+│   │       ├── billing/
+│   │       └── notifications/
+│   ├── domain/
+│   │   ├── models/
+│   │   └── types/
+│   └── infrastructure/
+│       ├── auth/
+│       ├── storage/
+│       ├── integrations/
+│       └── messaging/
+├── scripts/
+├── tests/
+│   ├── unit/
+│   ├── integration/
+│   └── e2e/
+├── tools/
+│   ├── generators/
+│   └── scripts/
+├── .env
+├── .eslintrc.json
+├── .prettierrc
+├── package.json
+├── pnpm-workspace.yaml
+├── tsconfig.json
+├── turbo.json (optional)
+└── vite.config.ts
+```
+
+---
+
+## Additional Structure from BoxyHQ SaaS Starter Kit
+
+- **components/modals/**: All modal dialog components.
+- **hooks/useNotifications.ts**: Manage in-app and email notifications.
+- **lib/permissions.ts**: Handle role-based access control.
+- **lib/featureFlags.ts**: Toggle features dynamically.
+- **models/notifications.ts**: Data structure for notifications.
+- **services/notifications/**: Business logic for notifications.
+- **infrastructure/messaging/**: Email/SMS configuration and services.
+
+---
+
+## Step-by-Step Setup Instructions
+
+### 1. Initialize the Monorepo
+
+```bash
+mkdir my-monorepo && cd my-monorepo
+git init
+```
+
+### 2. Create Root Configuration
+
+- Initialize `package.json`:
+
+```bash
+npm init -y
+```
+
+- Add **pnpm**:
+
+```bash
+npm install -g pnpm
+pnpm init
+```
+
+- Add **pnpm-workspace.yaml**:
+
+```yaml
+packages:
+  - "packages/**"
+  - "tools/**"
+```
+
+---
+
+### 3. Setup Each Package
+
+Inside each subdirectory (e.g., `packages/presentation/ui/`):
+
+```bash
+cd packages/presentation/ui
+pnpm init -y
+```
+
+Repeat for other sub-packages.
+
+---
+
+### 4. Root-Level Configurations
+
+- **`.eslintrc.json`**:
+
+```json
+{
+  "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint"],
+  "env": {
+    "node": true,
+    "es2021": true
+  }
+}
+```
+
+- **`.prettierrc`**:
+
+```json
+{
+  "semi": true,
+  "singleQuote": true,
+  "printWidth": 80
+}
+```
+
+- **`tsconfig.json`**:
+
+```json
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@ui/*": ["packages/presentation/ui/*"],
+      "@api/*": ["packages/presentation/api/*"],
+      "@services/*": ["packages/application/services/*"],
+      "@models/*": ["packages/domain/models/*"],
+      "@auth/*": ["packages/infrastructure/auth/*"]
+    },
+    "composite": true,
+    "declaration": true,
+    "outDir": "dist"
+  },
+  "include": ["packages/**/*"]
+}
+```
+
+---
+
+### 5. CI/CD with GitHub Actions
+
+`.github/workflows/ci.yml`:
+
+```yaml
+name: CI
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      - run: pnpm install
+      - run: pnpm build
+```
+
+---
+
+### 6. Optional: Add Turborepo
+
+Install Turbo:
+
+```bash
+pnpm add -D turbo
+```
+
+Create `turbo.json`:
+
+```json
+{
+  "$schema": "https://turborepo.org/schema.json",
+  "pipeline": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"]
+    },
+    "lint": {},
+    "test": {}
+  }
+}
+```
+
+Update **`package.json`** scripts:
+
+```json
+{
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "test": "turbo run test"
+  }
+}
+```
+
+---
+
+This guide gives you a fully modular, enterprise-ready monorepo structure with all configuration needed to start building!
+
