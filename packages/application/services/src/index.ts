@@ -54,3 +54,8 @@ export abstract class BaseService<T extends { id: string }> implements Service<T
 
 // Package version
 export const version = '0.1.0';
+export * from './auth';
+export * from './billing';
+export * from './notifications';
+export * from './settings';
+export * from './teams';

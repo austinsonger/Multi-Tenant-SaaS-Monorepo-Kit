@@ -163,3 +163,22 @@ export function createEmailService(
   
   return new MockEmailService();
 }
+import { EventEmitter } from 'events';
+
+class MessagingService {
+  private emitter: EventEmitter;
+
+  constructor() {
+    this.emitter = new EventEmitter();
+  }
+
+  publish(topic: string, message: any) {
+    this.emitter.emit(topic, message);
+  }
+
+  subscribe(topic: string, callback: (message: any) => void) {
+    this.emitter.on(topic, callback);
+  }
+}
+
+export const messagingService = new MessagingService();
