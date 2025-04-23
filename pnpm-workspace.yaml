@@ -1,3 +1,17 @@
 packages:
-  - "packages/**"
-  - "tools/**"
+  - 'packages/presentation/ui'
+  - 'packages/presentation/api'
+  - 'packages/presentation/dashboard-widgets'
+  - 'packages/presentation/hooks'
+  - 'packages/presentation/components'
+  - 'packages/presentation/lib'
+  - 'packages/presentation/models'
+  - 'packages/application/services'
+  - 'packages/application/services/*'
+  - 'packages/application/workflows/*'
+  - 'packages/domain/models'
+  - 'packages/domain/types'
+  - 'packages/infrastructure/auth'
+  - 'packages/infrastructure/storage'
+  - 'packages/infrastructure/integrations'
+  - 'packages/infrastructure/messaging'
